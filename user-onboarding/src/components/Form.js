@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import * as yup from "yup";
 
@@ -21,28 +21,76 @@ const formSchema = yup.object().shape({
 });
 
 export default function Form() {
-
+     //state for button
+    const [buttonDisabled, setButtonDisabled] = useState(true);
     //managing state for our form inputs
     const [formState, setFormState] = useState({
-        name: '',
-        email: '',
-        password: '',
-        role: '',
-        terms: ''
+        name: "",
+        email: "",
+        password: "",
+        role: "",
+        terms: ""
     });
     //state for Errors
     const [errors, setErrors] = useState({
-        name: '',
-        email: '',
-        password: '',
-        role: '',
-        terms: ''
+         name: "",
+        email: "",
+        password: "",
+        role: "",
+        terms: ""
     });
     //state for Post request
     const [post, setPost] = useState([]);
+   
 
 
-    //input Change
+   
+    
+    useEffect(() => {
+        formSchema.isValid(formState).then(valid => {
+            setButtonDisabled(!valid);
+        });
+    }, [formState]);
+
+ 
+
+    //form submit with post request
+    const formSubmit = e => {
+        e.preventDefault();
+        axios 
+            .post('https://reqres.in/api/users', formState)
+            .then( res => {
+                setPost(res.data);
+                console.log("success", post);
+                setFormState({
+                    name: "",
+                    email: "",
+                    password: "",
+                    role: "",
+                    terms: ""
+                });
+            })
+            .catch(err => console.log(err.response))
+    };
+
+    const validateChange = e => {
+         yup
+            .reach(formSchema, e.target.name)
+            .validate(e.target.value)
+            .then(valid => {
+                setErrors({
+                    ...errors, [e.target.name] : ""
+                });
+            })
+            .catch(err => {
+                setErrors({
+                    ...errors, 
+                    [e.target.name]: err.errors[0]
+                });
+            });
+    };
+
+ //input Change
     const inputChange = e => {
         e.persist();
         const newFormData = {
@@ -53,46 +101,9 @@ export default function Form() {
         validateChange(e);
         setFormState(newFormData);
     }
-    //validation
-    const validateChange = e => {
-        yup
-            .reach(formSchema, e.target.name)
-            .validate(e.target.value)
-            .then(valid => {
-                setErrors({
-                    ...errors, [e.target.name] : ''
-                });
-            })
-            .catch(err => {
-                setErrors({
-                    ...errors, [e.target.name]: err.errors[0]
-                });
-            });
-    };
-    //form submit with post request
-    const formSubmit = e => {
-        e.preventDefault();
-        axios 
-            .post('https://reqres.in/api/users', formState)
-            .then( res => {
-                setPost(res.data);
-                console.log("success", post);
-                setFormState({
-                    name: '',
-                    email: '',
-                    password: '',
-                    role: '',
-                    terms: ''
-                });
-            })
-            .catch(err => console.log(err.response))
-
-    }
-
-
 
     return (
-        <form>
+        <form onSubmit={formSubmit}>
             <label htmlFor="name">
                 Name
                 <input 
@@ -115,28 +126,30 @@ export default function Form() {
                 Password
                 <input 
                     type='text'
-                    name='name'
+                    name='password'
                     value={formState.password}
                     onChange={inputChange} 
                 />
             </label>
             <label htmlFor="role">
                 Role
-                <select id="roles" name="roles" onChange={inputChange}>
+                <select id="role" name="role" onChange={inputChange}>
                     <option value="Front-End"> Front-End</option>
                     <option value="Back-End">Back-End</option>
                     <option value="UI/UX Designer">UI/UX Designer</option>
                     <option value="Project Manager">Project Manager</option>
                 </select>
             </label>
-            <label htmlFor="">
-
+            <label htmlFor="terms" className="terms">
                 <input 
-
+                    type="checkbox"
+                    name="terms"
+                    checked={formState.terms}
+                    onChange={inputChange}
                 />
+                Agree to the Terms
             </label>
-            {/* <pre>{JSON.stringify(post, null, 3)}</pre> */}
-            <button>Submits</button>
+            <button disabled={buttonDisabled}>Submit</button>
         </form>
     );
 }

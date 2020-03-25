@@ -39,9 +39,8 @@ export default function Form() {
         role: "",
         terms: ""
     });
-    //state for Post request
-    const [post, setPost] = useState([]);
-   
+    //state for returning data in step 4
+    const [users, setUsers] = useState([]);
 
 
    
@@ -60,8 +59,8 @@ export default function Form() {
         axios 
             .post('https://reqres.in/api/users', formState)
             .then( res => {
-                setPost(res.data);
-                console.log("success", post);
+                setUsers(res.data);
+                console.log("success", users);
                 setFormState({
                     name: "",
                     email: "",
@@ -150,6 +149,7 @@ export default function Form() {
                 Agree to the Terms
             </label>
             <button disabled={buttonDisabled}>Submit</button>
+            <pre>{JSON.stringify(users, null, 3)}</pre>
         </form>
     );
 }

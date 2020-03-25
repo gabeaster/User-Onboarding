@@ -148,7 +148,10 @@ export default function Form() {
                 />
                 Agree to the Terms
             </label>
-            <button disabled={buttonDisabled}>Submit</button>
+            <div className='btn-container'>
+                <button disabled={buttonDisabled}>Submit</button>
+            </div>
+            
             <pre>{JSON.stringify(users, null, 3)}</pre>
         </form>
     );

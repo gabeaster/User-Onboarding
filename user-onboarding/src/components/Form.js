@@ -75,7 +75,7 @@ export default function Form() {
     const validateChange = e => {
          yup
             .reach(formSchema, e.target.name)
-            .validate(e.target.value)
+            .validate(e.target.name === "terms" ? e.target.checked : e.target.value)
             .then(valid => {
                 setErrors({
                     ...errors, [e.target.name] : ""

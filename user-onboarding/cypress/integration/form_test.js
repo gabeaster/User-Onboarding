@@ -23,4 +23,15 @@ describe("Testing inputs and submit for form", function() {
             .get('button')
             .click();
     });
+    it('displays errors on submit', function () {
+        // incorrect username on purpose
+        
+        cy.get('input[name=email]').type('email@email')
+
+        // we should have visible errors now
+        cy.get('p.error')
+        .should('be.visible')
+    });
+
+    
 });

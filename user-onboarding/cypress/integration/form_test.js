@@ -8,8 +8,12 @@ describe("Testing inputs and submit for form", function() {
             .type("name")
             .should("have.value", "name");
         cy
-            .get('input[name="email]')
+            .get('input[name="email"]')
             .type("email@email.com")
             .should("have.value", "email@email.com");
+        cy  
+            .get('input[name="password"]')
+            .type('password')
+            .should("have.value", "password");
     });
 });

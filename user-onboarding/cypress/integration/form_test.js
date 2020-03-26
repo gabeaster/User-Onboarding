@@ -15,5 +15,9 @@ describe("Testing inputs and submit for form", function() {
             .get('input[name="password"]')
             .type('password')
             .should("have.value", "password");
+        cy  
+            .get('[type="checkbox"]')
+            .check()
+            .should('be.checked');
     });
 });

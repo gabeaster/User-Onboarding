@@ -19,5 +19,8 @@ describe("Testing inputs and submit for form", function() {
             .get('[type="checkbox"]')
             .check()
             .should('be.checked');
+        cy  
+            .get('button')
+            .click();
     });
 });
